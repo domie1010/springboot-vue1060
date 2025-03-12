@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.dao.ExamrecordDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.entity.ExamrecordEntity" id="examrecordMap">
+        <result property="userid" column="userid"/>
+        <result property="username" column="username"/>
+        <result property="paperid" column="paperid"/>
+        <result property="papername" column="papername"/>
+        <result property="questionid" column="questionid"/>
+        <result property="questionname" column="questionname"/>
+        <result property="options" column="options"/>
+        <result property="score" column="score"/>
+        <result property="answer" column="answer"/>
+        <result property="analysis" column="analysis"/>
+        <result property="ismark" column="ismark"/>
+        <result property="type" column="type"/>
+        <result property="myscore" column="myscore"/>
+        <result property="myanswer" column="myanswer"/>
+    </resultMap>
+
+	<select id="selectListVO"
+		resultType="com.entity.vo.ExamrecordVO" >
+		SELECT * FROM examrecord  examrecord         
+        <where> 1=1 ${ew.sqlSegment}</where>
+	</select>
+	
+	<select id="selectVO"
+		resultType="com.entity.vo.ExamrecordVO" >
+		SELECT  examrecord.* FROM examrecord  examrecord 	
+ 		<where> 1=1 ${ew.sqlSegment}</where>
+	</select>
+
+    <select id="selectListView"
+		resultType="com.entity.view.ExamrecordView" >
+
+		SELECT  examrecord.* FROM examrecord  examrecord 	        
+        <where> 1=1 ${ew.sqlSegment}</where>
+	</select>
+	
+	<select id="selectView"
+		resultType="com.entity.view.ExamrecordView" >
+		SELECT * FROM examrecord  examrecord <where> 1=1 ${ew.sqlSegment}</where>
+	</select>
+	
+	<select id="selectGroupBy"
+		resultType="com.entity.view.ExamrecordView" >
+		select userid,username,paperid,papername,sum(myscore) myscore,ROUND(sum(case when myscore>0 then 1 else 0 end)/(sum(1)),2) accuracy,sum(case when type=4 and ismark=0 then 1 else 0 end) ismark from examrecord     
+        <where> 1=1 ${ew.sqlSegment}</where>
+        group by userid,username,paperid,papername  
+	</select>
+
+    <select id="selectOptionsNum"
+        resultType="com.entity.view.ExamrecordView" >
+        select questionname,options,type,
+            sum(case when myanswer like '%A%' then 1 else 0 end) anum,
+            sum(case when myanswer like '%B%' then 1 else 0 end) bnum,
+            sum(case when myanswer like '%C%' then 1 else 0 end) cnum,
+            sum(case when myanswer like '%D%' then 1 else 0 end) dnum
+        from examrecord
+        <where> 1=1 ${ew.sqlSegment}</where>
+        group by 1,2,3
+    </select>
+
+
+</mapper>
